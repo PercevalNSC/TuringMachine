@@ -1,6 +1,8 @@
 package dtm
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestOverwrite(t *testing.T) {
 	w := "neko"
@@ -18,5 +20,17 @@ func TestOverwrite(t *testing.T) {
 			t.Error(w)
 		}
 
+	})
+}
+
+func TestTuringMachine(t *testing.T) {
+	w := "bb#"
+	tm := TuringMachineSet(w, '$')
+	t.Run("overwrite test", func(t *testing.T) {
+		w2 := "ab#"
+		tm.overWrite('a', 0)
+		if w2 != tm.words {
+			t.Error(tm.words)
+		}
 	})
 }
