@@ -15,6 +15,8 @@ func TuringMachineSet(void_character byte) TuringMachine {
 	// constructor for TuringMachine
 	var turing_machine TuringMachine
 	turing_machine.void_character = void_character
+	turing_machine.constructNodes()
+
 	return turing_machine
 }
 func (tm *TuringMachine) overWrite(b byte, i int) {
@@ -31,7 +33,7 @@ func (tm *TuringMachine) overWrite(b byte, i int) {
 
 	tm.word = string(result)
 }
-func (tm *TuringMachine) ConstructNodes() {
+func (tm *TuringMachine) constructNodes() {
 	// This function set nodes of TuringMachine for TuringMachine instance.
 	tm.nodes = []TuringNode{
 		tm.p0Node(),
@@ -48,29 +50,33 @@ func (tm *TuringMachine) ConstructNodes() {
 func (tm *TuringMachine) RunWithDebug(word string, limit int) string {
 	// This function is inputed words, and this function returns words proccessed by TuringMachine.
 	word_position := 0
-	node_status := 0
+	node_id := 0
 	var path TuringPath
 	tm.word = word
+	fmt.Println("-----")
+	fmt.Println("input word:", tm.word)
 
-	for count := 0; tm.nodes[node_status].route != nil && count < limit; count++ {
+	for count := 0; tm.nodes[node_id].route != nil && count < limit; count++ {
 		if word_position < 0 || len(tm.word) <= word_position {
 			fmt.Println("input:", string(tm.void_character))
-			path = tm.nodes[node_status].wordPath(tm.void_character)
+			path = tm.nodes[node_id].wordPath(tm.void_character)
 		} else {
 			fmt.Println("input:", string(tm.word[word_position]))
-			path = tm.nodes[node_status].wordPath(tm.word[word_position])
+			path = tm.nodes[node_id].wordPath(tm.word[word_position])
 		}
 
+		fmt.Print("\t")
 		path.print()
 
-		node_status = path.goto_id
+		node_id = path.goto_id
 		tm.overWrite(path.replace_char, word_position)
 		word_position += path.head_moveto
 
-		fmt.Println("word:", tm.word, "position:", word_position, "status:", node_status)
+		fmt.Println("\tword:", tm.word, "position:", word_position, "node_id:", node_id)
 	}
 
 	fmt.Println("output:", tm.word)
+
 	return tm.word
 }
 func (tm *TuringMachine) Run(word string) string {

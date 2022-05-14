@@ -106,10 +106,6 @@ func TestTuringMachine(t *testing.T) {
 		fmt.Println(node)
 	})
 
-	t.Run("construct", func(t *testing.T) {
-		tm.ConstructNodes()
-	})
-
 	t.Run("run", func(t *testing.T) {
 		wlist := []string{"a#", "b#", "ab#"}
 		ans := []string{"a#ab", "b#ba", "ab#abba"}
