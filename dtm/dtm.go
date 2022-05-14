@@ -2,6 +2,7 @@ package dtm
 
 import (
 	"fmt"
+	"strconv"
 )
 
 type TuringMachine struct {
@@ -47,6 +48,8 @@ func (tm *TuringMachine) constructNodes() {
 	}
 	tm.end_id = append(tm.end_id, 7)
 }
+
+// Execute Turing Machine for words with debug print, and output processed words.
 func (tm *TuringMachine) RunWithDebug(word string, limit int) string {
 	// This function is inputed words, and this function returns words proccessed by TuringMachine.
 	word_position := 0
@@ -79,8 +82,9 @@ func (tm *TuringMachine) RunWithDebug(word string, limit int) string {
 
 	return tm.word
 }
+
+// Execute Turing Machine for words, and output processed words.
 func (tm *TuringMachine) Run(word string) string {
-	// This function is inputed words, and this function returns words proccessed by TuringMachine.
 	word_position := 0
 	node_status := 0
 	var path TuringPath
@@ -102,6 +106,17 @@ func (tm *TuringMachine) Run(word string) string {
 	return tm.word
 }
 
+// Print a status of Turing Machine
+func (tm *TuringMachine) Print() {
+	fmt.Println("word:", tm.word)
+	fmt.Println("void_character:", tm.void_character)
+	fmt.Println("end_ids", tm.end_id)
+	fmt.Println("nodes:")
+	for _, node := range tm.nodes {
+		fmt.Println("{" + node.str() + "}")
+	}
+}
+
 type TuringPath struct {
 	goto_id      int
 	replace_char byte
@@ -115,11 +130,34 @@ func (tp *TuringPath) print() {
 	fmt.Println("path:", tp.goto_id, string(tp.replace_char), tp.head_moveto)
 }
 
+// Return string for TuringPath status
+func (tp *TuringPath) str() string {
+	return "{" + strconv.Itoa(tp.goto_id) +
+		" " + string(tp.replace_char) +
+		" " + strconv.Itoa(tp.head_moveto) + "}"
+}
+
 type TuringNode struct {
 	id    int
 	route map[string]TuringPath
 }
 
+// Return string of TuringNode status
+func (tn *TuringNode) str() string {
+	turing_paths_str := "["
+	i := 0
+	for key, path := range tn.route {
+		turing_paths_str = turing_paths_str + key + ":" + path.str()
+		if i != len(tn.route)-1 {
+			turing_paths_str = turing_paths_str + " "
+		}
+		i++
+	}
+	turing_paths_str = turing_paths_str + "]"
+	return strconv.Itoa(tn.id) + " " + turing_paths_str
+}
+
+// Search TuringPath for input_byte
 func (tn *TuringNode) wordPath(input_word byte) TuringPath {
 	path, status := tn.route[string(input_word)]
 	if status {
