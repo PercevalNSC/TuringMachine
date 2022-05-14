@@ -1,7 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"turing/dtm"
+)
 
 func main() {
-	fmt.Println("neko")
+	w := "ab#"
+	tm := dtm.TuringMachineSet('$')
+	tm.ConstructNodes()
+	fmt.Println("turing machine output:", tm.Run(w))
 }
